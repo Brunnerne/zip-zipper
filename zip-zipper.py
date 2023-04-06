@@ -68,9 +68,7 @@ def resolve_folder(folder):
             paths.append(path)
     # Make filenames relative to the parent of the folder
     files = [os.path.join(paths[i], files[i]) for i in range(len(files))]
-
-    print(files,paths)
-
+    
     return (files,paths)
 
 def compress_multiple(files, paths, password, compression_level, temp_dir):
