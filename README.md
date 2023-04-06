@@ -8,6 +8,7 @@ By default, all layers are encrypted with the same random password.
 
 ```
 usage: Zip Zipper [-h] [-p PASSWORD] [--no_password] [-l LAYER [LAYER ...]] [-o OUTPUT_FILENAME] [-n NUM_LAYERS] [-c COMPRESSION_LEVEL] [-m]
+                  [-so SAVE_PASSWORDS_FILE] [-sl SAVE_PASSWORDS_LAYER]
                   filenames [filenames ...]
 
 Zips files/folders into a layered zip file
@@ -21,8 +22,7 @@ options:
                         Password for the zip files, or outermost layer if -m is used
   --no_password         Do not use any passwords
   -l LAYER [LAYER ...], --layer LAYER [LAYER ...]
-                        Files and folders to zip in each layer. Format: layernum:file1,file2 layernum2:file3,file4. Example: 1:file1,folder1
-                        4:file2,file3
+                        Files and folders to zip in each layer. Format: layernum:file1,file2 layernum2:file3,file4. Example: 1:file1,folder1 4:file2,file3
   -o OUTPUT_FILENAME, --output_filename OUTPUT_FILENAME
                         Output filename
   -n NUM_LAYERS, --num_layers NUM_LAYERS
@@ -30,4 +30,8 @@ options:
   -c COMPRESSION_LEVEL, --compression_level COMPRESSION_LEVEL
                         Compression level (1-9) (fastest - best compression)
   -m, --multi_password  Use a different password for each layer
+  -so SAVE_PASSWORDS_FILE, --save_passwords_file SAVE_PASSWORDS_FILE
+                        Save passwords to a file, specify filename
+  -sl SAVE_PASSWORDS_LAYER, --save_passwords_layer SAVE_PASSWORDS_LAYER
+                        Save passwords to a layer, specify layer number
 ```

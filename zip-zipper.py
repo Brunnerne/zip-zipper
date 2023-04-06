@@ -16,6 +16,8 @@ parser.add_argument('-o', '--output_filename', default='output.zip', help='Outpu
 parser.add_argument('-n', '--num_layers', type=int, default=1, help='Number of layers')
 parser.add_argument('-c', '--compression_level', type=int, default=5, help='Compression level (1-9) (fastest - best compression)')
 parser.add_argument('-m', '--multi_password', action='store_true', help='Use a different password for each layer')
+parser.add_argument('-so', '--save_passwords_file', help='Save passwords to a file, specify filename')
+parser.add_argument('-sl', '--save_passwords_layer', type=int, help='Save passwords to a layer, specify layer number')
 
 args = parser.parse_args()
 
@@ -37,6 +39,11 @@ if args.layer:
             exit()
         filenames = layer[1].split(',')
         layers[layer_num].extend(filenames)
+
+# Make sure the save passwords layer is valid
+if args.save_passwords_layer and args.save_passwords_layer >= args.num_layers:
+    print('Layer number must be less than the number of layers')
+    exit()
 
 compression_level = args.compression_level
 
@@ -124,6 +131,15 @@ with tempfile.TemporaryDirectory() as temp_dir:
     if args.no_password:
         passwords = [None for i in range(args.num_layers)]
 
+    # Save passwords to a file
+    if args.save_passwords_file or args.save_passwords_layer:
+        with open(os.path.join(temp_dir, "passwords.txt"), 'w') as f:
+            for i, password in enumerate(passwords):
+                f.write('Password ' + str(i) + ': ' + str(password))
+        if args.save_passwords_file:
+            shutil.copy(os.path.join(temp_dir, "passwords.txt"), args.save_passwords_file)
+        if args.save_passwords_layer:
+            layers[int(args.save_passwords_layer)].append(os.path.join(temp_dir, "passwords.txt"))
 
     # Compress the first layer
     zip_name = compress_layer(layers[0], passwords[0], compression_level, temp_dir)
