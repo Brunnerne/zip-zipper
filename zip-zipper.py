@@ -10,6 +10,7 @@ parser = argparse.ArgumentParser(
                     description='Zips files/folders into a layered zip file')
 parser.add_argument('filenames', nargs='+', help='Files and folders to zip in layer 0')
 parser.add_argument('-p', '--password', help='Password for the zip files, or outermost layer if -m is used')
+parser.add_argument('--no_password', action='store_true', help='Do not use any passwords')
 parser.add_argument('-l', '--layer', nargs='+', help='Files and folders to zip in each layer. Format: layernum:file1,file2 layernum2:file3,file4. Example: 1:file1,folder1 4:file2,file3')
 parser.add_argument('-o', '--output_filename', default='output.zip', help='Output filename')
 parser.add_argument('-n', '--num_layers', type=int, default=1, help='Number of layers')
@@ -68,7 +69,7 @@ def resolve_folder(folder):
             paths.append(path)
     # Make filenames relative to the parent of the folder
     files = [os.path.join(paths[i], files[i]) for i in range(len(files))]
-    
+
     return (files,paths)
 
 def compress_multiple(files, paths, password, compression_level, temp_dir):
@@ -118,6 +119,10 @@ with tempfile.TemporaryDirectory() as temp_dir:
         # Set all passwords to the user specified password or the same random password
         rand_pass = secrets.token_hex(16)
         passwords = [args.password or rand_pass for i in range(args.num_layers)]
+
+    # Set all passwords to None if no_password is specified
+    if args.no_password:
+        passwords = [None for i in range(args.num_layers)]
 
 
     # Compress the first layer
